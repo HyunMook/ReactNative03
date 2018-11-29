@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, StatusBar } from 'react-native';
+import { Text, View, StatusBar } from 'react-native';
 import { LinearGradient } from 'expo';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
+import CommonStyles, { IndexStyles } from './styles';
+import WeatherUpper from './upper';
+import WeatherLower from './lower';
 
 const weatherCases = [
   {
@@ -68,9 +70,8 @@ export default class Weather extends Component {
 
     this.state = {
       weatherInfo: {
-        temperature: this.props.weatherTemperature[0],
-        temperatureMin: this.props.weatherTemperature[1],
-        temperatureMax: this.props.weatherTemperature[2],
+        location: props.weatherLocation,
+        temperature: props.weatherTemperature,
       },
     };
   }
@@ -92,8 +93,8 @@ export default class Weather extends Component {
         wCase.minCod <= this.props.weatherId &&
         wCase.maxCod >= this.props.weatherId
       ) {
-        console.log('wCase(' + this.props.weatherId + ')');
-        console.log(wCase);
+        // console.log('wCase(' + this.props.weatherId + ')');
+        // console.log(wCase);
         this.setState({
           weatherInfo: { ...this.state.weatherInfo, ...wCase },
         });
@@ -103,64 +104,20 @@ export default class Weather extends Component {
 
   render() {
     console.log(this.state);
+    const { title, location, icon, temperature } = this.state.weatherInfo;
     return (
       <LinearGradient
         colors={this.state.weatherInfo.colors}
-        style={styles.container}
+        style={IndexStyles.container}
       >
         <StatusBar hidden={true} />
-        <View style={styles.upper}>
-          <Text style={styles.subtitle}>{this.props.weatherLocation}</Text>
-          <MaterialCommunityIcons
-            color="white"
-            size={144}
-            name={this.state.weatherInfo.icon}
-          />
-          <Text style={styles.title}>
-            {Math.round(this.state.weatherInfo.temperature * 10) / 10}º
-          </Text>
-          <Text style={styles.subtitle}>
-            ({Math.round(this.state.weatherInfo.temperatureMin * 10) / 10}º ~{' '}
-            {Math.round(this.state.weatherInfo.temperatureMax * 10) / 10}º)
-          </Text>
-        </View>
-        <View style={styles.lower}>
-          <Text style={styles.title}>{this.state.weatherInfo.title}</Text>
-          {/* <Text style={styles.subtitle}>SubText</Text> */}
-        </View>
+        <WeatherUpper
+          icon={icon}
+          location={location}
+          temperature={temperature}
+        />
+        <WeatherLower title={title} />
       </LinearGradient>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  upper: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-  },
-  fontIcon: {
-    fontSize: 80,
-    color: 'white',
-  },
-  lower: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    backgroundColor: 'transparent',
-  },
-  title: {
-    fontSize: 38,
-    color: 'white',
-    marginBottom: 14,
-  },
-  subtitle: {
-    fontSize: 24,
-    color: 'white',
-    marginBottom: 24,
-  },
-});

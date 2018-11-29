@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Weather from './Weather';
+import { Text, View } from 'react-native';
+import Weather from './src/components/Weather';
+import CommonStyles from './src/styles/common';
 
 const OWM_API_KEY = '5634c8194969006374f4ce44e7339577';
 /**
@@ -32,7 +33,6 @@ export default class App extends Component {
       },
       (err) => {
         this.setState({ geolocationError: err });
-        // console.log(err);
       },
     );
   }
@@ -64,9 +64,10 @@ export default class App extends Component {
       weatherLocation,
       weatherTemperature,
     } = this.state;
-    console.log(this.state);
+    // console.log(this.state);
+
     return (
-      <View style={styles.container}>
+      <View style={CommonStyles.container}>
         {isLoaded ? (
           <Weather
             weatherId={weatherId}
@@ -74,10 +75,10 @@ export default class App extends Component {
             weatherLocation={weatherLocation}
           />
         ) : (
-          <View style={styles.loading}>
-            <Text style={styles.loadingText}>Getting weather...</Text>
+          <View style={CommonStyles.loading}>
+            <Text style={CommonStyles.loadingText}>Getting weather...</Text>
             {geolocationError ? (
-              <Text style={styles.errorText}>{geolocationError}</Text>
+              <Text style={CommonStyles.errorText}>{geolocationError}</Text>
             ) : null}
           </View>
         )}
@@ -85,26 +86,3 @@ export default class App extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  loading: {
-    flex: 1,
-    backgroundColor: '#FDF6AA',
-    justifyContent: 'flex-end',
-    paddingLeft: 20,
-    paddingRight: 20,
-  },
-  loadingText: {
-    fontSize: 38,
-    marginBottom: 100,
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 14,
-    marginBottom: 40,
-  },
-});
