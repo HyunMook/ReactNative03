@@ -3,60 +3,9 @@ import { Text, View, StatusBar } from 'react-native';
 import { LinearGradient } from 'expo';
 import PropTypes from 'prop-types';
 import CommonStyles, { IndexStyles } from './styles';
+import WeatherCases from './cases';
 import WeatherUpper from './upper';
 import WeatherLower from './lower';
-
-const weatherCases = [
-  {
-    title: 'Thunderstorm',
-    minCod: 200,
-    maxCod: 299,
-    colors: ['#00ecbc', '#007adf'],
-    icon: 'weather-lightning',
-  },
-  {
-    title: 'Drizzle',
-    minCod: 300,
-    maxCod: 399,
-    colors: ['#89f7fe', '#66a6ff'],
-    icon: 'weather-rainy',
-  },
-  {
-    title: 'Rain',
-    minCod: 500,
-    maxCod: 599,
-    colors: ['#00C6FB', '#005BEA'],
-    icon: 'weather-pouring',
-  },
-  {
-    title: 'Snow',
-    minCod: 600,
-    maxCod: 699,
-    colors: ['#7de2fc', '#b9b6e5'],
-    icon: 'weather-snowy',
-  },
-  {
-    title: 'Atmosphere',
-    minCod: 700,
-    maxCod: 799,
-    colors: ['#e4e4e4', '#4e4e4e'],
-    icon: 'weather-fog',
-  },
-  {
-    title: 'Clear',
-    minCod: 800,
-    maxCod: 800,
-    colors: ['#fef253', '#ff7300'],
-    icon: 'weather-sunny',
-  },
-  {
-    title: 'Clouds',
-    minCod: 801,
-    maxCod: 804,
-    colors: ['#00C6FB', '#005BEA'],
-    icon: 'weather-cloudy',
-  },
-];
 
 export default class Weather extends Component {
   static propType = {
