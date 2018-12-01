@@ -34,7 +34,7 @@ export default class Weather extends Component {
             long: position.coords.longitude,
           },
         });
-        console.log(position);
+        // console.log(position);
       },
       (err) => {
         this.setState({ geolocation: { err } });
@@ -75,31 +75,31 @@ export default class Weather extends Component {
   };
 
   componentWillMount() {
-    console.log('componentWillMount');
     this._getGeolocation();
   }
+  componentDidMount() {}
 
-  componentWillUpdate() {
-    if (this.state.weather.id == '') {
-      console.log('go2weather');
+  componentWillUpdate() {}
+  componentDidUpdate() {
+    if (
+      this.state.weather.id == '' &&
+      this.state.geolocation.lat !== 0 &&
+      this.state.geolocation.long !== 0
+    ) {
+      // console.log(this.state.geolocation);
       this._getWeather();
     } else if (!this.state.view) {
-      console.log('go2view');
+      // console.log(this.state.weather);
       this._getWeatherView();
     } else {
-      console.log('nothing');
+      // console.log('nothing');
     }
-  }
-  componentDidMount() {
-    console.log('componentDidMount');
   }
 
   render() {
     let geoData = this.state.geolocation;
     let weatherData = this.state.weather;
     let viewData = this.state.view || false;
-
-    console.log(this.state);
 
     return (
       <View style={CommonStyles.container}>
@@ -114,7 +114,10 @@ export default class Weather extends Component {
               location={weatherData.location}
               temperature={weatherData.temperature}
             />
-            <WeatherLower title={viewData.title} />
+            <WeatherLower
+              title={viewData.title}
+              propNavi={this.props.navigation}
+            />
           </LinearGradient>
         ) : (
           <View style={CommonStyles.loading}>
