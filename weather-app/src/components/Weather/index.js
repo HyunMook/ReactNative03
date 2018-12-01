@@ -1,123 +1,133 @@
 import React, { Component } from 'react';
 import { Text, View, StatusBar } from 'react-native';
 import { LinearGradient } from 'expo';
-import PropTypes from 'prop-types';
 import CommonStyles, { IndexStyles } from './styles';
+import OWM_API_KEY from './api_key';
+import WeatherCases from './cases';
 import WeatherUpper from './upper';
 import WeatherLower from './lower';
 
-const weatherCases = [
-  {
-    title: 'Thunderstorm',
-    minCod: 200,
-    maxCod: 299,
-    colors: ['#00ecbc', '#007adf'],
-    icon: 'weather-lightning',
-  },
-  {
-    title: 'Drizzle',
-    minCod: 300,
-    maxCod: 399,
-    colors: ['#89f7fe', '#66a6ff'],
-    icon: 'weather-rainy',
-  },
-  {
-    title: 'Rain',
-    minCod: 500,
-    maxCod: 599,
-    colors: ['#00C6FB', '#005BEA'],
-    icon: 'weather-pouring',
-  },
-  {
-    title: 'Snow',
-    minCod: 600,
-    maxCod: 699,
-    colors: ['#7de2fc', '#b9b6e5'],
-    icon: 'weather-snowy',
-  },
-  {
-    title: 'Atmosphere',
-    minCod: 700,
-    maxCod: 799,
-    colors: ['#e4e4e4', '#4e4e4e'],
-    icon: 'weather-fog',
-  },
-  {
-    title: 'Clear',
-    minCod: 800,
-    maxCod: 800,
-    colors: ['#fef253', '#ff7300'],
-    icon: 'weather-sunny',
-  },
-  {
-    title: 'Clouds',
-    minCod: 801,
-    maxCod: 804,
-    colors: ['#00C6FB', '#005BEA'],
-    icon: 'weather-cloudy',
-  },
-];
-
 export default class Weather extends Component {
-  static propType = {
-    weatherId: PropTypes.number.isRequired,
-    weatherTemperature: PropTypes.array.isRequired,
-    weatherLocation: PropTypes.string.isRequired,
-  };
-
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
-      weatherInfo: {
-        location: props.weatherLocation,
-        temperature: props.weatherTemperature,
+      geolocation: {
+        lat: 0,
+        long: 0,
+        err: false,
+      },
+      weather: {
+        id: '',
+        location: '',
+        temperature: [],
       },
     };
   }
 
-  componentWillMount() {
-    //TEST
-    // wCase = {
-    //   title: 'Clear',
-    //   minCod: 800,
-    //   maxCod: 800,
-    //   colors: ['#fef253', '#ff7300'],
-    //   icon: 'weather-sunny',
-    // };
-    // this.setState({
-    //   weatherInfo: { ...this.state.weatherInfo, ...wCase },
-    // });
-    weatherCases.forEach((wCase) => {
-      if (
-        wCase.minCod <= this.props.weatherId &&
-        wCase.maxCod >= this.props.weatherId
-      ) {
-        // console.log('wCase(' + this.props.weatherId + ')');
-        // console.log(wCase);
+  _getGeolocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
         this.setState({
-          weatherInfo: { ...this.state.weatherInfo, ...wCase },
+          geolocation: {
+            lat: position.coords.latitude,
+            long: position.coords.longitude,
+          },
         });
+        // console.log(position);
+      },
+      (err) => {
+        this.setState({ geolocation: { err } });
+      },
+    );
+  };
+  _getWeather = () => {
+    const { lat, long } = this.state.geolocation;
+    fetch(
+      `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${OWM_API_KEY}`,
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        // console.log(json);
+        this.setState({
+          weather: {
+            id: json.weather[0].id,
+            location: json.name,
+            temperature: [
+              json.main.temp,
+              json.main.temp_min,
+              json.main.temp_max,
+            ],
+          },
+        });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  _getWeatherView = () => {
+    const wInfo = this.state.weather;
+    weatherCases.forEach((wCase) => {
+      if (wCase.minCod <= wInfo.id && wCase.maxCod >= wInfo.id) {
+        this.setState({ view: wCase });
+        return false;
       }
     });
+  };
+
+  componentWillMount() {
+    this._getGeolocation();
+  }
+  componentDidMount() {}
+
+  componentWillUpdate() {}
+  componentDidUpdate() {
+    if (
+      this.state.weather.id == '' &&
+      this.state.geolocation.lat !== 0 &&
+      this.state.geolocation.long !== 0
+    ) {
+      // console.log(this.state.geolocation);
+      this._getWeather();
+    } else if (!this.state.view) {
+      // console.log(this.state.weather);
+      this._getWeatherView();
+    } else {
+      // console.log('nothing');
+    }
   }
 
   render() {
-    console.log(this.state);
-    const { title, location, icon, temperature } = this.state.weatherInfo;
+    let geoData = this.state.geolocation;
+    let weatherData = this.state.weather;
+    let viewData = this.state.view || false;
+
     return (
-      <LinearGradient
-        colors={this.state.weatherInfo.colors}
-        style={IndexStyles.container}
-      >
-        <StatusBar hidden={true} />
-        <WeatherUpper
-          icon={icon}
-          location={location}
-          temperature={temperature}
-        />
-        <WeatherLower title={title} />
-      </LinearGradient>
+      <View style={CommonStyles.container}>
+        {viewData ? (
+          <LinearGradient
+            colors={viewData.colors}
+            style={IndexStyles.container}
+          >
+            <StatusBar hidden={true} />
+            <WeatherUpper
+              icon={viewData.icon}
+              location={weatherData.location}
+              temperature={weatherData.temperature}
+            />
+            <WeatherLower
+              title={viewData.title}
+              propNavi={this.props.navigation}
+            />
+          </LinearGradient>
+        ) : (
+          <View style={CommonStyles.loading}>
+            <Text style={CommonStyles.loadingText}>Getting weather...</Text>
+            {geoData.err && (
+              <Text style={CommonStyles.errorText}>{geoData.err}</Text>
+            )}
+          </View>
+        )}
+      </View>
     );
   }
 }
