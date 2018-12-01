@@ -26,7 +26,6 @@ export default class Weather extends Component {
   }
 
   _getGeolocation = () => {
-    console.log('_getGeolocation');
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this.setState({
@@ -35,24 +34,21 @@ export default class Weather extends Component {
             long: position.coords.longitude,
           },
         });
-        // console.log(position);
+        console.log(position);
       },
       (err) => {
         this.setState({ geolocation: { err } });
       },
     );
   };
-  _getWeather = async () => {
-    console.log('_getWeather1');
-    await this._getGeolocation();
-    console.log('_getWeather2');
+  _getWeather = () => {
     const { lat, long } = this.state.geolocation;
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${long}&APPID=${OWM_API_KEY}`,
     )
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
+        // console.log(json);
         this.setState({
           weather: {
             id: json.weather[0].id,
@@ -68,30 +64,42 @@ export default class Weather extends Component {
       .catch((err) => console.log(err));
   };
 
-  _getWeatherView = async () => {
-    console.log('_getWeatherView1');
-    await this._getWeather();
-    console.log('_getWeatherView2');
+  _getWeatherView = () => {
+    const wInfo = this.state.weather;
     weatherCases.forEach((wCase) => {
-      const wInfo = this.state.weather;
       if (wCase.minCod <= wInfo.id && wCase.maxCod >= wInfo.id) {
         this.setState({ view: wCase });
+        return false;
       }
     });
-    t;
   };
 
   componentWillMount() {
     console.log('componentWillMount');
-    this._getWeatherView();
+    this._getGeolocation();
+  }
+
+  componentWillUpdate() {
+    if (this.state.weather.id == '') {
+      console.log('go2weather');
+      this._getWeather();
+    } else if (!this.state.view) {
+      console.log('go2view');
+      this._getWeatherView();
+    } else {
+      console.log('nothing');
+    }
+  }
+  componentDidMount() {
+    console.log('componentDidMount');
   }
 
   render() {
-    console.log(this.state);
+    let geoData = this.state.geolocation;
+    let weatherData = this.state.weather;
+    let viewData = this.state.view || false;
 
-    const geoData = this.state.geolocation;
-    const weatherData = this.state.weather;
-    const viewData = this.state.view || false;
+    console.log(this.state);
 
     return (
       <View style={CommonStyles.container}>
