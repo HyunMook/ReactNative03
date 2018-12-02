@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Text, View, StatusBar, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo';
+import PropTypes from 'prop-types';
+
 import CommonStyles, { IndexStyles } from './styles';
 import OWM_API_KEY from './api_key';
 import WeatherCases from './cases';
@@ -10,7 +12,6 @@ import WeatherLower from './lower';
 export default class Weather extends Component {
   constructor() {
     super();
-
     this.state = {
       geolocation: {
         lat: 0,
@@ -23,6 +24,7 @@ export default class Weather extends Component {
         temperature: [],
       },
     };
+    console.log(this.props);
   }
 
   _getGeolocation = () => {
@@ -75,6 +77,7 @@ export default class Weather extends Component {
   };
 
   componentWillMount() {
+    console.log(this.props);
     this._getGeolocation();
   }
   componentDidMount() {}
@@ -136,3 +139,7 @@ export default class Weather extends Component {
     );
   }
 }
+
+Weather.propTypes = {
+  navigation: PropTypes.object.isRequired,
+};
