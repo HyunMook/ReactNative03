@@ -3,18 +3,20 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-  },
-  loading: {
-    flex: 1,
     backgroundColor: '#FDF6AA',
-    justifyContent: 'flex-end',
-    paddingLeft: 20,
-    paddingRight: 20,
+  },
+  loadingUpper: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  loadingLower: {
+    flex: 1,
+    justifyContent: 'flex-start',
   },
   loadingText: {
-    fontSize: 38,
+    fontSize: 28,
     marginBottom: 100,
+    textAlign: 'center',
   },
   errorText: {
     color: 'red',

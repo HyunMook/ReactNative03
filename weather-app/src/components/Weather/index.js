@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StatusBar } from 'react-native';
+import { Text, View, StatusBar, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo';
 import CommonStyles, { IndexStyles } from './styles';
 import OWM_API_KEY from './api_key';
@@ -120,11 +120,16 @@ export default class Weather extends Component {
             />
           </LinearGradient>
         ) : (
-          <View style={CommonStyles.loading}>
-            <Text style={CommonStyles.loadingText}>Getting weather...</Text>
-            {geoData.err && (
-              <Text style={CommonStyles.errorText}>{geoData.err}</Text>
-            )}
+          <View style={CommonStyles.container}>
+            <View style={CommonStyles.loadingUpper}>
+              <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+            <View style={CommonStyles.loadingLower}>
+              <Text style={CommonStyles.loadingText}>Getting weather...</Text>
+              {geoData.err && (
+                <Text style={CommonStyles.errorText}>{geoData.err}</Text>
+              )}
+            </View>
           </View>
         )}
       </View>
