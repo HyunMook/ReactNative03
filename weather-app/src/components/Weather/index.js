@@ -24,7 +24,6 @@ export default class Weather extends Component {
         temperature: [],
       },
     };
-    console.log(this.props);
   }
 
   _getGeolocation = () => {
@@ -77,7 +76,6 @@ export default class Weather extends Component {
   };
 
   componentWillMount() {
-    console.log(this.props);
     this._getGeolocation();
   }
   componentDidMount() {}
