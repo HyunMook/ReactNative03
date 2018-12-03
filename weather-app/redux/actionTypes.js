@@ -1,0 +1,5 @@
+export const REFRESH_WEATHER = 'REFRESH_WEATHER';
+export const CHANGE_LOCATION = 'CHANGE_LOCATION';
+
+export const NEXT_VIDEO = 'NEXT_VIDEO';
+export const PREV_VIDEO = 'PREV_VIDEO';

@@ -4,6 +4,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import CommonStyles, { UpperStyles } from './styles';
 
+import WeatherLocation from './location';
+
 export default function WeatherUpper({ icon, location, temperature }) {
   return (
     <View style={UpperStyles.upper}>
@@ -16,6 +18,7 @@ export default function WeatherUpper({ icon, location, temperature }) {
         ({Math.round(temperature[1] * 10) / 10}º ~{' '}
         {Math.round(temperature[2] * 10) / 10}º)
       </Text>
+      <WeatherLocation />
     </View>
   );
 }

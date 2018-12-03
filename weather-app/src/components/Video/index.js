@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
+import PropTypes from 'prop-types';
 
-export default class Vid extends Component {
+class Vid extends Component {
+  constructor() {
+    super();
+
+    this.state = {};
+  }
   render() {
     return (
       <View>
@@ -10,3 +16,5 @@ export default class Vid extends Component {
     );
   }
 }
+
+export default Vid;
