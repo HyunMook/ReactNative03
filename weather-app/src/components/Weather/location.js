@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, TextInput, Button } from 'react-native';
 
 import { connect } from 'react-redux';
-import { changeLocation } from '../redux/actions';
+import { changeLocation } from '../../../redux/actions';
 
 class WeatherLocation extends Component {
   constructor(props) {
